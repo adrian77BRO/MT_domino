@@ -1,18 +1,115 @@
 body {
     font-family: Arial, sans-serif;
     text-align: center;
+    background-color: #f5f5f5;
+    margin: 0;
+    padding: 0;
 }
 
-#game-board,
-#player-hand {
+#game-board {
+    display: flex;
+    flex-wrap: nowrap;
+    gap: 10px;
+    padding: 20px;
+    background-color: #eee;
+    border-bottom: 4px solid #333;
+    overflow-x: auto;
+    max-width: calc(120px * 14 + 130px);
+    height: 125px;
+    margin: 0 auto;
+    box-shadow: inset 0 0 5px rgba(0, 0, 0, 0.2);
+}
+
+.scrollable::-webkit-scrollbar {
+    height: 8px;
+}
+
+.scrollable::-webkit-scrollbar-thumb {
+    background-color: #333;
+    border-radius: 4px;
+}
+
+.scrollable::-webkit-scrollbar-track {
+    background: #ccc;
+}
+
+#player-tiles {
     display: flex;
     justify-content: center;
-    margin: 20px;
+    gap: 10px;
+    padding: 20px;
+    background-color: #ddd;
+    border-top: 4px solid #333;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 125px;
 }
 
 .tile {
-    border: 1px solid black;
+    width: 140px;
+    height: 80px;
+    background-color: #fff;
+    border: 2px solid #333;
+    border-radius: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     padding: 10px;
-    margin: 5px;
+    box-shadow: 2px 2px 5px rgba(0, 0, 0, 0.2);
     cursor: pointer;
+}
+
+.tile .dot {
+    width: 12px;
+    height: 12px;
+    background-color: #333;
+    border-radius: 50%;
+    margin: 3px;
+}
+
+.tile-top, .tile-bottom {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    width: 100%;
+}
+
+#eat-tile {
+    margin: 50px;
+    padding: 15px;
+    font-size: 16px;
+    cursor: pointer;
+    background-color: #0072ff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+}
+
+#eat-tile:hover {
+    background-color: #005bb5;
+}
+
+#message {
+    font-size: 18px;
+    color: #fff;
+    margin: 10px 0;
+    padding: 10px;
+}
+
+.info, .success, .error {
+    display: block;
+}
+
+.info {
+    background-color: #787878;
+}
+
+.success {
+    background-color: #28a745;
+}
+
+.error {
+    background-color: #dc3545;
 }

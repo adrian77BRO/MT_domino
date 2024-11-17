@@ -39,19 +39,64 @@ function renderPlayerTiles() {
     gameState.playerHand.forEach(tile => {
         const tileDiv = document.createElement("div");
         tileDiv.className = "tile";
-        tileDiv.innerText = tile;
+
+        const [top, bottom] = tile.split("-").map(Number);
+
+        const tileTopDiv = document.createElement("div");
+        tileTopDiv.className = "tile-top";
+        addDots(tileTopDiv, top);
+
+        const tileBottomDiv = document.createElement("div");
+        tileBottomDiv.className = "tile-bottom";
+        addDots(tileBottomDiv, bottom);
+
+        tileDiv.appendChild(tileTopDiv);
+        tileDiv.appendChild(tileBottomDiv);
+
         tileDiv.onclick = () => playTile(tile);
         playerTilesContainer.appendChild(tileDiv);
     });
 }
 
 function renderBoard() {
+    const gameBoard = document.getElementById("game-board");
     gameBoard.innerHTML = '';
     gameState.board.forEach(tile => {
         const tileDiv = document.createElement("div");
         tileDiv.className = "tile";
-        tileDiv.innerText = tile;
+
+        const [top, bottom] = tile.split("-").map(Number);
+
+        const tileTopDiv = document.createElement("div");
+        tileTopDiv.className = "tile-top";
+        addDots(tileTopDiv, top);
+
+        const tileBottomDiv = document.createElement("div");
+        tileBottomDiv.className = "tile-bottom";
+        addDots(tileBottomDiv, bottom);
+
+        tileDiv.appendChild(tileTopDiv);
+        tileDiv.appendChild(tileBottomDiv);
+
         gameBoard.appendChild(tileDiv);
+    });
+}
+
+function addDots(container, value) {
+    const dotPositions = [
+        [],
+        [4],
+        [0, 8],
+        [0, 4, 8],
+        [0, 2, 6, 8],
+        [0, 2, 4, 6, 8],
+        [0, 2, 3, 5, 6, 8],
+    ];
+
+    dotPositions[value].forEach(position => {
+        const dot = document.createElement("div");
+        dot.className = "dot";
+        container.appendChild(dot);
     });
 }
 
@@ -94,22 +139,27 @@ async function playTile(tile) {
         gameState.playerHand = gameState.playerHand.filter(t => t !== tile);
         renderBoard();
         renderPlayerTiles();
-        messageDiv.innerText = "Ficha jugada. Turno del oponente...";
+        messageDiv.innerText = "Ficha jugada. Turno del oponente";
+        messageDiv.className = "info";
         checkGameEnd();
 
         if (gameState.playerHand.length === 0) {
             messageDiv.innerText = "¡Felicidades! Ganaste, te quedaste sin fichas.";
+            messageDiv.className = "success";
             return;
         }
         setTimeout(playVirtualMove, 1000);
     } else {
         if (await hasPlayableTile(gameState.playerHand)) {
             messageDiv.innerText = "Movimiento inválido. Intente de nuevo.";
+            messageDiv.className = "error";
         } else if (gameState.deck.length > 0) {
             eatTile();
             messageDiv.innerText = "Comiendo una ficha...";
+            messageDiv.className = "info";
         } else {
-            messageDiv.innerText = "No tienes jugadas válidas y no hay fichas para comer. Es turno del oponente.";
+            messageDiv.innerText = "No tienes jugadas válidas. Es turno del oponente.";
+            messageDiv.className = "info";
             setTimeout(playVirtualMove, 1000);
         }
     }
@@ -134,9 +184,11 @@ async function playVirtualMove() {
             checkGameEnd();
             if (gameState.virtualHand.length === 0) {
                 messageDiv.innerText = "El oponente ha ganado, se quedó sin fichas.";
+                messageDiv.className = "error";
                 return;
             }
             messageDiv.innerText = "Es tu turno.";
+            messageDiv.className = "info";
             return;
         }
         if (gameState.deck.length > 0) {
@@ -145,7 +197,8 @@ async function playVirtualMove() {
             updateDeckCount();
             continue;
         }
-        messageDiv.innerText = "El oponente no tiene jugadas válidas y no quedan fichas para comer.";
+        messageDiv.innerText = "El oponente no tiene jugadas válidas. Es tu turno";
+        messageDiv.className = "info";
         checkGameEnd();
         return;
     }
@@ -175,8 +228,10 @@ function eatTile() {
         renderPlayerTiles();
         updateDeckCount();
         messageDiv.innerText = `Has tomado una ficha: ${newTile}.`;
+        messageDiv.className = "info";
     } else {
         messageDiv.innerText = "No quedan fichas en el mazo.";
+        messageDiv.className = "info";
     }
 }
 
@@ -186,14 +241,19 @@ function endGame() {
 
     if (gameState.playerHand.length === 0) {
         messageDiv.innerText = `¡Ganaste! Te quedaste sin fichas.`;
+        messageDiv.className = "success";
     } else if (gameState.virtualHand.length === 0) {
         messageDiv.innerText = `¡Perdiste! El oponente se quedó sin fichas.`;
+        messageDiv.className = "error";
     } else if (playerScore < virtualScore) {
         messageDiv.innerText = `¡Ganaste! Puntuación: Tú ${playerScore} - Oponente ${virtualScore}`;
+        messageDiv.className = "success";
     } else if (playerScore > virtualScore) {
         messageDiv.innerText = `¡Perdiste! Puntuación: Tú ${playerScore} - Oponente ${virtualScore}`;
+        messageDiv.className = "error";
     } else {
         messageDiv.innerText = `Es un empate. Puntuación: Tú ${playerScore} - Oponente ${virtualScore}`;
+        messageDiv.className = "info";
     }
 }
 
